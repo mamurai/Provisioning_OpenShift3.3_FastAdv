@@ -126,8 +126,12 @@
     shell: sed -i "s/      namespace{{ ':' }} {{ item.proj }}/      namespace{{ ':' }} dev-pj/g" {{ working_dir }}/{{ app_name }}_{{ item.proj }}_dc.yaml
     with_items: "{{ image_tags }}"
 
-  - name: Reprace Deployment Config
-    shell: oc replace -f {{ working_dir }}/{{ app_name }}_{{ item.proj }}_dc.yaml -n {{ item.proj }}
+  - name: Delete Deployment Config
+    shell: oc delete dc {{ app_name }} -n {{ item.proj }}
+    with_items: "{{ image_tags }}"
+
+  - name: Create Deployment Config
+    shell: oc create -f {{ working_dir }}/{{ app_name }}_{{ item.proj }}_dc.yaml -n {{ item.proj }}
     with_items: "{{ image_tags }}"
 
   - name: Create Pipeline Template {{ pipeline-name }}
