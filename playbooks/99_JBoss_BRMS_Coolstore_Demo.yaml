@@ -1,0 +1,34 @@
+- hosts: masters
+  remote_user: root
+
+  vars:
+    master_config : /etc/origin/master/master-config.yaml
+    htpasswd : /etc/origin/master/htpasswd
+    admin_user : oscadm
+    users: 
+       - { name: 'admin', passwd : 'admin' }
+       - { name: 'openshift-dev', passwd : 'devel' }
+    coolstore_demo : https://github.com/redhatdemocentral/rhcs-coolstore-demo/archive/master.zip
+
+  tasks:
+  - name: install httpd-tools (htpasswd)
+    yum: name=httpd-tools state=latest
+
+  - name: Create User
+    shell: htpasswd -b {{ htpasswd }} {{ item.name }} {{ item.passwd }}
+    with_items: "{{ users }}"
+
+  - name: Add cluster-admin to openshift-dev
+    shell: "oadm policy add-cluster-role-to-user cluster-admin openshift-dev"
+
+  - name: Install packages
+    yum: name={{ item }} state=present
+    with_items:
+      - unzip
+
+  - name: Get coolstore-demo
+    shell: wget {{ coolstore_demo }}
+
+  - name: unzip coolstore-demo
+    shell : unzip master.zip
+
