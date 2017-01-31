@@ -5,8 +5,9 @@
     master_config : /etc/origin/master/master-config.yaml
     htpasswd : /etc/origin/master/htpasswd
     admin_user : oscadm
+    admin_passwd : r3dh4t1!
     users: 
-       - { name: 'admin', passwd : 'admin' }
+       - { name: "{{ admin_user }}" , passwd: "{{ admin_passwd }}" }
        - { name: 'openshift-dev', passwd : 'devel' }
     coolstore_demo : https://github.com/redhatdemocentral/rhcs-coolstore-demo/archive/master.zip
 
@@ -18,8 +19,8 @@
     shell: htpasswd -b {{ htpasswd }} {{ item.name }} {{ item.passwd }}
     with_items: "{{ users }}"
 
-  - name: Add cluster-admin to openshift-dev
-    shell: "oadm policy add-cluster-role-to-user cluster-admin openshift-dev"
+  - name: Add cluster-admin to {{ admin_user }}
+    shell: "oadm policy add-cluster-role-to-user cluster-admin {{ admin_user }}"
 
   - name: Install packages
     yum: name={{ item }} state=present
