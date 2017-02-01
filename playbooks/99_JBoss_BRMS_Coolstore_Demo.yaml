@@ -25,6 +25,27 @@
   - name: Add cluster-admin to {{ admin_user }}
     shell: "oadm policy add-cluster-role-to-user cluster-admin {{ admin_user }}"
 
+  - name: modify provider
+    lineinfile: 
+      "dest={{ master_config }}
+      regexp='DenyAllPasswordIdentityProvider'
+      line='      kind: HTPasswdPasswordIdentityProvider'"
+
+  - name: modify auth_type
+    lineinfile:
+      "dest={{ master_config }}
+      regexp='deny_all'
+      line='    name: htpasswd_auth'"
+
+  - name: Add HTPasswd File
+    lineinfile:
+      "dest={{ master_config }}
+      insertafter='HTPasswdPasswordIdentityProvider'
+      line='      file: {{ htpasswd }}'"
+
+  - name : OpenShift Master Service Restart
+    service: name=atomic-openshift-master.service state=restarted
+    
   - name: Install packages
     yum: name={{ item }} state=present
     with_items:
