@@ -55,5 +55,5 @@
     shell: wget {{ coolstore_demo }}
 
   - name: unzip coolstore-demo
-    shell : unzip master.zip
+    shell : unzip -o master.zip
 
