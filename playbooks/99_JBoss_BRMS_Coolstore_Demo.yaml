@@ -15,6 +15,9 @@
   - name: install httpd-tools (htpasswd)
     yum: name=httpd-tools state=latest
 
+  - name: Create HtPasswd File
+    file: path={{ htpasswd }} state=touch mode="u=rw,g=r,o=r"
+    
   - name: Create User
     shell: htpasswd -b {{ htpasswd }} {{ item.name }} {{ item.passwd }}
     with_items: "{{ users }}"
