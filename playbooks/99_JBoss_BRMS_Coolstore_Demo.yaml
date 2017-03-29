@@ -4,7 +4,7 @@
   vars:
     master_config : /etc/origin/master/master-config.yaml
     htpasswd : /etc/origin/master/htpasswd
-    admin_user : oscadm
+    admin_user : ocpadm
     admin_passwd : r3dh4t1!
     users: 
        - { name: "{{ admin_user }}" , passwd: "{{ admin_passwd }}" }
